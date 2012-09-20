@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>endo.jpg</file>
+        <file>start.jpg</file>
+        <file>icone.ico</file>
+    </qresource>
+    <qresource prefix="/Cartes">
+        <file>cartes/carte1.jpg</file>
+        <file>cartes/carte2.jpg</file>
+        <file>cartes/carte3.jpg</file>
+        <file>cartes/carte4.jpg</file>
+        <file>cartes/carte5.jpg</file>
+        <file>cartes/carte6.jpg</file>
+        <file>cartes/carte7.jpg</file>
+        <file>cartes/carte8.jpg</file>
+        <file>cartes/carte9.jpg</file>
+        <file>cartes/carte10.jpg</file>
+        <file>cartes/carte11.jpg</file>
+        <file>cartes/carte12.jpg</file>
+        <file>cartes/carte13.jpg</file>
+        <file>cartes/carte14.jpg</file>
+        <file>cartes/carte15.jpg</file>
+        <file>cartes/carte16.jpg</file>
+        <file>cartes/carte17.jpg</file>
+        <file>cartes/carte18.jpg</file>
+    </qresource>
+</RCC>
