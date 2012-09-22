@@ -19,33 +19,29 @@ void LabelImageJeu::mousePressEvent(QMouseEvent *event)
 {  
     if (event->button() == Qt::LeftButton && m_trouver != true)
     {
-        FenPrincipale* pFenPrincipale = qobject_cast<FenPrincipale*>(parent());
+        pFenPrincipale = qobject_cast<FenPrincipale*>(parent()->parent());
 
         if(pFenPrincipale)
         {
-
             int nombreCartesRetournees = pFenPrincipale->cartesRetournees();
 
             //Si aucune carte retournée
             if(nombreCartesRetournees == 0)
             {
-                retourner(this);
-
-                m_voitFace = true;
+                retourner();
                 pFenPrincipale->setDerniereCarte(this);
             }
 
             //Si une carte retournée
             if(nombreCartesRetournees == 1)
             {
-                retourner(this);
-                m_voitFace = true;
+                retourner();
 
                 //on vérifie si les deux images sont pareilles
-                    LabelImageJeu* pDerniereCarte = pFenPrincipale->derniereCarte();
+                    pDerniereCarte = pFenPrincipale->derniereCarte();
                 if(pDerniereCarte)
                 {
-                    if(pDerniereCarte->m_numeroImage == m_numeroImage)
+                    if(pDerniereCarte->m_numeroImage == m_numeroImage && pDerniereCarte != this)
                     {
                         m_trouver = true;
                         pDerniereCarte->m_trouver = true;
@@ -55,8 +51,8 @@ void LabelImageJeu::mousePressEvent(QMouseEvent *event)
 
                     else
                     {
-                        retourner(this);
-                        retourner(pDerniereCarte);
+                        qApp->processEvents();
+                        QTimer::singleShot(1200, this, SLOT(continuerRetourner()));
                     }
                 }
             }
@@ -80,19 +76,32 @@ bool LabelImageJeu::voitFace()
 
 
 /**********Retourner la carte**********/
-void LabelImageJeu::retourner(LabelImageJeu* carte)
+void LabelImageJeu::retourner()
 {
-    if(carte->m_voitFace)
+    if(m_voitFace)
     {
-        carte->setPixmap(QPixmap(":/Images/endo.jpg"));
-        carte->m_voitFace = false;
+      setPixmap(QPixmap(":/Images/endo.jpg"));
     }
 
-    if(!carte->m_voitFace)
+    else
     {
-        QString filepath;
-        filepath += ":/Cartes/cartes/carte" + carte->m_numeroImage;
-        filepath += ".jpg";
-        carte->setPixmap(QPixmap(filepath));
+        QString filepath(":/Cartes/cartes/carte%1.jpg");
+        setPixmap(QPixmap(filepath.arg(m_numeroImage)));
     }
+    m_voitFace = !m_voitFace ;
+}
+
+
+/**********Slot appelé après 1,2 sec**********/
+void LabelImageJeu::continuerRetourner()
+{
+    retourner();
+    pDerniereCarte->retourner();
+
+    pFenPrincipale->setDerniereCarte(0);
+}
+
+void LabelImageJeu::setTrouver(bool trouver)
+{
+   m_trouver = trouver;
 }

@@ -17,17 +17,22 @@ class FenPrincipale : public QMainWindow
         void gagne();
         int cartesRetournees();
 
-        void centreFenetre();
-
     public slots:
         void nouvellePartie();
+        void quitter();
+        void afficherAbout();
+        void cheat();
 
     private:
         LabelImageJeu* m_derniereCarte;
-        bool m_partieEnCours;
         QWidget* zoneCentrale;
         QGridLayout* grilleJeu;
         QList<LabelImageJeu*> listeImagesJeu;
+
+    protected:
+        void closeEvent(QCloseEvent *event);
+        void enregistrerSettings(QString nomFenetre);
+        void chargerSettings(QString nomFenetre);
 };
 
 #endif // FENPRINCIPALE_H

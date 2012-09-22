@@ -1,19 +1,17 @@
 #include "FenPrincipale.h"
+#include "About.h"
 
 /**********Constructeur***********/
 FenPrincipale::FenPrincipale() : QMainWindow()
 {
     //Initialisation d'attributs
     m_derniereCarte = 0;
-    m_partieEnCours = false;
 
     //création de la fenetre de base
     zoneCentrale = new QWidget;
-    zoneCentrale->setStyleSheet("border-image: url(:/Images/start.jpg);"
-                                    "background-repeat: no-repeat;");
-    resize(800, 600);
+    zoneCentrale->setStyleSheet("border-image: url(:/Images/start.jpg);");
 
-    centreFenetre();
+    chargerSettings("FenBase");
 
     //création des menus
     QMenu *menuPartie = menuBar()->addMenu("&Partie");
@@ -22,11 +20,6 @@ FenPrincipale::FenPrincipale() : QMainWindow()
         //Menu Partie
         QAction *actionJouer = menuPartie->addAction("Nouvelle &partie");
             actionJouer->setShortcut(QKeySequence(Qt::Key_F2));
-        menuPartie->addSeparator();
-        QAction *actionOptions = menuPartie->addAction("&Options (à venir)");
-            actionOptions->setShortcut(QKeySequence(Qt::Key_F4));
-        QAction *actionStatistiques = menuPartie->addAction("&Statistiques (à venir)");
-            actionStatistiques->setShortcut(QKeySequence(Qt::Key_F5));
         menuPartie->addSeparator();
         QAction *actionQuitter = menuPartie->addAction("&Quitter");
             actionQuitter->setShortcut(QKeySequence(Qt::Key_Escape));
@@ -37,10 +30,12 @@ FenPrincipale::FenPrincipale() : QMainWindow()
 
 
     //connections
-    connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(actionQuitter, SIGNAL(triggered()), this, SLOT(quitter()));
     connect(actionJouer, SIGNAL(triggered()), this, SLOT(nouvellePartie()));
+    connect(actionPropos, SIGNAL(triggered()), this, SLOT(afficherAbout()));
 
-
+    QShortcut* shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this);
+    connect(shortcut, SIGNAL(activated()), this, SLOT(cheat()));
 
     setCentralWidget(zoneCentrale);
 }
@@ -49,6 +44,8 @@ FenPrincipale::FenPrincipale() : QMainWindow()
 /**********Lancement d'une nouvelle partie**********/
 void FenPrincipale::nouvellePartie()
 {
+    enregistrerSettings("FenBase");
+
     delete zoneCentrale;
     listeImagesJeu.clear();
 
@@ -79,12 +76,13 @@ void FenPrincipale::nouvellePartie()
         }
     }
 
-    zoneCentrale->setStyleSheet("background-color: black");
+    zoneCentrale->setObjectName("zone1");
+    zoneCentrale->setStyleSheet("QWidget#zone1 { border-image: url(:/Images/fond.jpg); }");
 
     zoneCentrale->setLayout(grilleJeu);
     setCentralWidget(zoneCentrale);
 
-    centreFenetre();
+    chargerSettings("FenJeu");
 }
 
 
@@ -99,9 +97,10 @@ void FenPrincipale::setDerniereCarte(LabelImageJeu* derniereCarte)
 int FenPrincipale::nombreRandom(QList<int> &nombres)
 {
     int nombreRandom = rand()% nombres.count();
+    int nombreTableau = nombres.at(nombreRandom);
     nombres.removeAt(nombreRandom);
 
-    return nombreRandom;
+    return nombreTableau;
 }
 
 
@@ -118,29 +117,19 @@ void FenPrincipale::gagne()
         }
     }
 
-    if(!cartes)
+    if(cartes == 0)
     {
+        enregistrerSettings("FenJeu");
+
         delete zoneCentrale;
         listeImagesJeu.clear();
 
         zoneCentrale = new QWidget;
-        zoneCentrale->setStyleSheet("border-image: url(:/Images/start.jpg);"
-                                     "background-repeat: no-repeat;");
-        resize(800, 600);
+        zoneCentrale->setStyleSheet("border-image: url(:/Images/start.jpg);");
 
-        centreFenetre();
+        setCentralWidget(zoneCentrale);
+        chargerSettings("FenBase");
     }
-}
-
-
-/**********Centrer la fenêtre**********/
-void FenPrincipale::centreFenetre()
-{
-    QDesktopWidget bureau;
-    QRect surface_bureau = bureau.screenGeometry();
-    int x = surface_bureau.width()/2 - width()/2;
-    int y = surface_bureau.height()/2 - height()/2;
-    move(x,y);
 }
 
 
@@ -165,4 +154,88 @@ int FenPrincipale::cartesRetournees()
 LabelImageJeu* FenPrincipale::derniereCarte()
 {
     return m_derniereCarte;
+}
+
+
+/**********Enregistrer les settings**********/
+void FenPrincipale::enregistrerSettings(QString nomFenetre)
+{
+    QSettings settings("../settings.ini", QSettings::IniFormat);
+    settings.beginGroup(nomFenetre);
+    QString nom = "position" + nomFenetre;
+    settings.setValue(nom, this->geometry());
+    settings.endGroup();
+}
+
+
+/**********Charger les settings**********/
+void FenPrincipale::chargerSettings(QString nomFenetre)
+{
+    QDesktopWidget bureau;
+    QRect surface_bureau = bureau.screenGeometry();
+    int x = surface_bureau.width()/2 - width()/2;
+    int y = surface_bureau.height()/2 - height()/2;
+
+    QSettings settings("../settings.ini", QSettings::IniFormat);
+    settings.beginGroup(nomFenetre);
+    QString nom = "position" + nomFenetre;
+    QRect maPosition = settings.value(nom).toRect();
+    if(maPosition.isEmpty())
+        {
+            if(nomFenetre == "FenBase"){
+                maPosition.setRect(x, y, 800, 600);
+            }
+            if(nomFenetre == "FenJeu"){
+                maPosition.setRect(x, y, 900, 1000);
+            }
+        }
+    setGeometry(maPosition);
+    settings.endGroup();
+}
+
+
+/**********Slot quitter personnalisé**********/
+void FenPrincipale::quitter()
+{
+    if(listeImagesJeu.isEmpty()){
+        enregistrerSettings("FenBase");
+    }
+    else{
+        enregistrerSettings("FenJeu");
+    }
+
+    qApp->quit();
+}
+
+
+/**********Réimplémentation de l'event close(croix rouge)**********/
+void FenPrincipale::closeEvent(QCloseEvent *event)
+{
+    if(listeImagesJeu.isEmpty()){
+        enregistrerSettings("FenBase");
+    }
+    else{
+        enregistrerSettings("FenJeu");
+    }
+
+    event->accept();
+}
+
+
+/**********Afficher about du jeu**********/
+void FenPrincipale::afficherAbout()
+{
+    About *fenetreAbout = new About(this);
+        fenetreAbout->exec();
+}
+
+
+void FenPrincipale::cheat()
+{
+    for(int i = 0; i < 36; i++)
+    {
+        listeImagesJeu.at(i)->setTrouver(true);
+    }
+
+    gagne();
 }

@@ -3,6 +3,8 @@
         <file>endo.jpg</file>
         <file>start.jpg</file>
         <file>icone.ico</file>
+        <file>fond.jpg</file>
+        <file>icone.png</file>
     </qresource>
     <qresource prefix="/Cartes">
         <file>cartes/carte1.jpg</file>

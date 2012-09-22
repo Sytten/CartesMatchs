@@ -1,11 +1,13 @@
 SOURCES += \
     main.cpp \
     FenPrincipale.cpp \
-    LabelImageJeu.cpp
+    LabelImageJeu.cpp \
+    About.cpp
 
 HEADERS += \
     FenPrincipale.h \
-    LabelImageJeu.h
+    LabelImageJeu.h \
+    About.h
 
 RESOURCES += \
     MesRessources.qrc
