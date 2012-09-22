@@ -34,6 +34,7 @@ FenPrincipale::FenPrincipale() : QMainWindow()
     connect(actionJouer, SIGNAL(triggered()), this, SLOT(nouvellePartie()));
     connect(actionPropos, SIGNAL(triggered()), this, SLOT(afficherAbout()));
 
+    //cheat temporaire!!!!!!
     QShortcut* shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this);
     connect(shortcut, SIGNAL(activated()), this, SLOT(cheat()));
 
@@ -47,7 +48,7 @@ void FenPrincipale::nouvellePartie()
     enregistrerSettings("FenBase");
 
     delete zoneCentrale;
-    listeImagesJeu.clear();
+    listeImagesJeu.clear(); //Au cas où il y aurait une partie déjà en cours
 
     QList<int> nombres;
 
@@ -55,19 +56,19 @@ void FenPrincipale::nouvellePartie()
     grilleJeu = new QGridLayout;
 
 
-    for(int i = 1; i < 19; i++)
+    for(int i = 1; i < 19; i++) //initialisation du tableau 2x chaque nombre jusqu'à 18
     {
         nombres << i << i;
     }
 
-    for(int i = 0; i < 36; i++)
+    for(int i = 0; i < 36; i++) //création des objets (cartes)
     {
         listeImagesJeu.append(new LabelImageJeu(nombreRandom(nombres)));
     }
 
     int numeroImage = 0;
 
-    for(int x = 0; x < 6; x++)
+    for(int x = 0; x < 6; x++) //Placer les cartes dans une grille
     {
         for(int y = 0; y < 6; y++)
         {
@@ -76,6 +77,7 @@ void FenPrincipale::nouvellePartie()
         }
     }
 
+    //définir le fond
     zoneCentrale->setObjectName("zone1");
     zoneCentrale->setStyleSheet("QWidget#zone1 { border-image: url(:/Images/fond.jpg); }");
 
@@ -109,7 +111,7 @@ void FenPrincipale::gagne()
 {
     int cartes(0);
 
-    for(int i = 0; i < 36; i++)
+    for(int i = 0; i < 36; i++) //regarder si une carte est encore à trouver = false
     {
         if(listeImagesJeu.at(i)->trouver() == false)
         {
@@ -117,7 +119,7 @@ void FenPrincipale::gagne()
         }
     }
 
-    if(cartes == 0)
+    if(cartes == 0) //si aucune, on changement pour l'interface de départ
     {
         enregistrerSettings("FenJeu");
 
@@ -160,7 +162,7 @@ LabelImageJeu* FenPrincipale::derniereCarte()
 /**********Enregistrer les settings**********/
 void FenPrincipale::enregistrerSettings(QString nomFenetre)
 {
-    QSettings settings("../settings.ini", QSettings::IniFormat);
+    QSettings settings("settings.ini", QSettings::IniFormat);
     settings.beginGroup(nomFenetre);
     QString nom = "position" + nomFenetre;
     settings.setValue(nom, this->geometry());
@@ -171,22 +173,23 @@ void FenPrincipale::enregistrerSettings(QString nomFenetre)
 /**********Charger les settings**********/
 void FenPrincipale::chargerSettings(QString nomFenetre)
 {
-    QDesktopWidget bureau;
+    QDesktopWidget bureau; //center la fenetre (trouver les coordonnées)
     QRect surface_bureau = bureau.screenGeometry();
     int x = surface_bureau.width()/2 - width()/2;
     int y = surface_bureau.height()/2 - height()/2;
+    int w = surface_bureau.width();
 
-    QSettings settings("../settings.ini", QSettings::IniFormat);
+    QSettings settings("settings.ini", QSettings::IniFormat);
     settings.beginGroup(nomFenetre);
     QString nom = "position" + nomFenetre;
     QRect maPosition = settings.value(nom).toRect();
-    if(maPosition.isEmpty())
+    if(maPosition.isEmpty()) //si le fichier .ini est vide
         {
             if(nomFenetre == "FenBase"){
                 maPosition.setRect(x, y, 800, 600);
             }
             if(nomFenetre == "FenJeu"){
-                maPosition.setRect(x, y, 900, 1000);
+                maPosition.setRect(x, y, w, 600);
             }
         }
     setGeometry(maPosition);
@@ -197,7 +200,7 @@ void FenPrincipale::chargerSettings(QString nomFenetre)
 /**********Slot quitter personnalisé**********/
 void FenPrincipale::quitter()
 {
-    if(listeImagesJeu.isEmpty()){
+    if(listeImagesJeu.isEmpty()){ //enregistrer la position de la fenêtre avant de quitter
         enregistrerSettings("FenBase");
     }
     else{
@@ -211,7 +214,7 @@ void FenPrincipale::quitter()
 /**********Réimplémentation de l'event close(croix rouge)**********/
 void FenPrincipale::closeEvent(QCloseEvent *event)
 {
-    if(listeImagesJeu.isEmpty()){
+    if(listeImagesJeu.isEmpty()){ //enregistrer la position de la fenêtre avant de quitter
         enregistrerSettings("FenBase");
     }
     else{
