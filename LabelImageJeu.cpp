@@ -8,8 +8,16 @@ LabelImageJeu::LabelImageJeu(int numeroImage): QLabel(), m_numeroImage(numeroIma
     m_trouver = false;
     m_voitFace = false;
 
+    //calcul de la taille d'image selon écran
+    QDesktopWidget bureau;
+    QRect surface_bureau = bureau.screenGeometry();
+    h = surface_bureau.height()/6 - 25;
+    w = h;
+
     //On affiche l'endo
-    setPixmap(QPixmap(":/Images/endo.jpg"));
+    QPixmap imageBase(":/Images/endo.jpg");
+    imageBase = imageBase.scaled(w, h);
+    setPixmap(imageBase);
 
 }
 
@@ -78,13 +86,17 @@ bool LabelImageJeu::voitFace()
 void LabelImageJeu::retourner()
 {
     if(m_voitFace){ //si on voit la face
-      setPixmap(QPixmap(":/Images/endo.jpg"));
+        QPixmap imageBase(":/Images/endo.jpg");
+        imageBase = imageBase.scaled(w, h);
+        setPixmap(imageBase);
     }
 
     else
     {
         QString filepath(":/Cartes/cartes/carte%1.jpg");
-        setPixmap(QPixmap(filepath.arg(m_numeroImage)));
+        QPixmap imageJeu(filepath.arg(m_numeroImage));
+        imageJeu = imageJeu.scaled(w, h);
+        setPixmap(imageJeu);
     }
     m_voitFace = !m_voitFace; //changer pour l'opposé car on vient de faire une action plus haut
 }

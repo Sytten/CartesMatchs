@@ -27,6 +27,9 @@ class LabelImageJeu : public QLabel
         bool m_voitFace;
         int m_numeroImage;
 
+        int w;
+        int h;
+
         FenPrincipale* pFenPrincipale;
         LabelImageJeu* pDerniereCarte;
 };
