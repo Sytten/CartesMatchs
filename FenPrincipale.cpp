@@ -1,11 +1,13 @@
 #include "FenPrincipale.h"
 #include "About.h"
+#include <QDebug>
 
 /**********Constructeur***********/
 FenPrincipale::FenPrincipale() : QMainWindow()
 {
     //Initialisation d'attributs
     m_derniereCarte = 0;
+    m_dejaEnregistre = false;
 
     //création de la fenetre de base
     zoneCentrale = new QWidget;
@@ -34,10 +36,6 @@ FenPrincipale::FenPrincipale() : QMainWindow()
     connect(actionJouer, SIGNAL(triggered()), this, SLOT(nouvellePartie()));
     connect(actionPropos, SIGNAL(triggered()), this, SLOT(afficherAbout()));
 
-    //cheat temporaire!!!!!!
-    QShortcut* shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this);
-    connect(shortcut, SIGNAL(activated()), this, SLOT(cheat()));
-
     setCentralWidget(zoneCentrale);
 }
 
@@ -45,7 +43,10 @@ FenPrincipale::FenPrincipale() : QMainWindow()
 /**********Lancement d'une nouvelle partie**********/
 void FenPrincipale::nouvellePartie()
 {
-    enregistrerSettings("FenBase");
+    if(!m_dejaEnregistre){
+        enregistrerSettings("FenBase");
+    }
+    m_dejaEnregistre = true;
 
     delete zoneCentrale;
     listeImagesJeu.clear(); //Au cas où il y aurait une partie déjà en cours
@@ -121,7 +122,7 @@ void FenPrincipale::gagne()
 
     if(cartes == 0) //si aucune, on changement pour l'interface de départ
     {
-        enregistrerSettings("FenJeu");
+        //enregistrerSettings("FenJeu");
 
         delete zoneCentrale;
         listeImagesJeu.clear();
@@ -177,7 +178,7 @@ void FenPrincipale::chargerSettings(QString nomFenetre)
     QRect surface_bureau = bureau.screenGeometry();
     int x = surface_bureau.width()/2 - width()/2;
     int y = surface_bureau.height()/2 - height()/2;
-    int w = surface_bureau.width();
+    int h = surface_bureau.height();
 
     QSettings settings("settings.ini", QSettings::IniFormat);
     settings.beginGroup(nomFenetre);
@@ -189,7 +190,7 @@ void FenPrincipale::chargerSettings(QString nomFenetre)
                 maPosition.setRect(x, y, 800, 600);
             }
             if(nomFenetre == "FenJeu"){
-                maPosition.setRect(x, y, w, 600);
+                maPosition.setRect(x, y, 600, h);
             }
         }
     setGeometry(maPosition);
@@ -230,15 +231,4 @@ void FenPrincipale::afficherAbout()
 {
     About *fenetreAbout = new About(this);
         fenetreAbout->exec();
-}
-
-
-void FenPrincipale::cheat()
-{
-    for(int i = 0; i < 36; i++)
-    {
-        listeImagesJeu.at(i)->setTrouver(true);
-    }
-
-    gagne();
 }

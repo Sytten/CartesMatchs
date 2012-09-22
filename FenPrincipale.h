@@ -21,13 +21,14 @@ class FenPrincipale : public QMainWindow
         void nouvellePartie();
         void quitter();
         void afficherAbout();
-        void cheat();
 
     private:
         LabelImageJeu* m_derniereCarte;
         QWidget* zoneCentrale;
         QGridLayout* grilleJeu;
         QList<LabelImageJeu*> listeImagesJeu;
+
+        bool m_dejaEnregistre;
 
     protected:
         void closeEvent(QCloseEvent *event);
