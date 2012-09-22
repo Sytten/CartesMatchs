@@ -51,7 +51,6 @@ void LabelImageJeu::mousePressEvent(QMouseEvent *event)
 
                     else
                     {
-                        qApp->processEvents();
                         QTimer::singleShot(1200, this, SLOT(continuerRetourner()));
                     }
                 }
@@ -78,8 +77,7 @@ bool LabelImageJeu::voitFace()
 /**********Retourner la carte**********/
 void LabelImageJeu::retourner()
 {
-    if(m_voitFace)
-    {
+    if(m_voitFace){ //si on voit la face
       setPixmap(QPixmap(":/Images/endo.jpg"));
     }
 
@@ -88,7 +86,7 @@ void LabelImageJeu::retourner()
         QString filepath(":/Cartes/cartes/carte%1.jpg");
         setPixmap(QPixmap(filepath.arg(m_numeroImage)));
     }
-    m_voitFace = !m_voitFace ;
+    m_voitFace = !m_voitFace; //changer pour l'opposé car on vient de faire une action plus haut
 }
 
 
