@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>back.jpg</file>
+        <file>background.jpg</file>
+        <file>cards/card1.jpg</file>
+        <file>cards/card2.jpg</file>
+        <file>cards/card3.jpg</file>
+        <file>cards/card4.jpg</file>
+        <file>cards/card5.jpg</file>
+        <file>cards/card6.jpg</file>
+        <file>cards/card7.jpg</file>
+        <file>cards/card8.jpg</file>
+        <file>cards/card9.jpg</file>
+        <file>cards/card10.jpg</file>
+        <file>cards/card11.jpg</file>
+        <file>cards/card12.jpg</file>
+        <file>cards/card13.jpg</file>
+        <file>cards/card14.jpg</file>
+        <file>cards/card15.jpg</file>
+        <file>cards/card16.jpg</file>
+        <file>cards/card17.jpg</file>
+        <file>cards/card18.jpg</file>
+    </qresource>
+</RCC>
