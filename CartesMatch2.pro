@@ -7,8 +7,7 @@ SOURCES += \
 HEADERS += \
     game.h \
     gameWindow.h \
-    gameImage.h \
-    randomNumber.h
+    gameImage.h
 
 RESOURCES += \
     Ressources.qrc

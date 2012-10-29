@@ -6,7 +6,10 @@
 #include<QGridLayout>
 #include<QList>
 #include<QLabel>
-#include<gameImage.h>
+#include<QAction>
+
+class GameImage;
+
 
 class GameWindow : public QMainWindow
 {
@@ -14,16 +17,13 @@ class GameWindow : public QMainWindow
 
     public:
         GameWindow(QMainWindow *parent = 0);
-        QList<GameImage*> pointers() const { return imagesPointers; }
-
-    public slots:
-        void newGame();
-        //void about();
+        QAction* returnActionNewGame() { return actionNewGame; }
+        void displayNewGame(QList<GameImage*> pointersOnImages);
 
     private:
         QWidget *m_centralArea;
         QGridLayout *images;
-        QList<GameImage*> imagesPointers;
+        QAction *actionNewGame;
 };
 
 #endif // GAMEWINDOW_H

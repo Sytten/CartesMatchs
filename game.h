@@ -3,27 +3,32 @@
 
 #include <QWidget>
 #include <QLabel>
-#include "gameImage.h"
-#include "gameWindow.h"
 
-class Game : public QObject
+class GameImage;
+class GameWindow;
+
+
+class Game : public QWidget
 {
   Q_OBJECT
 
   public:
     Game();
     ~Game();
-    int countCardsFaceDown(QList<GameImage*> pointers) const;
-    void checkWin(QList<GameImage*> pointers) const;
+    int countCardsFaceDown() const;
+    void checkWin();
 
   public slots:
     void imagePressed(GameImage *image);
+    void newGame();
 
   private:
     GameImage *m_lastCard;
     GameWindow *m_window;
-
+    QList<GameImage*> m_pointersOnCards;
 
 };
+
+int generateNumber(int a);
 
 #endif // GAME_H

@@ -6,7 +6,6 @@
 GameImage::GameImage(int imageNumber, QLabel *parent): QLabel(parent), m_imageNumber(imageNumber), m_faceDown(true), m_found(false)
 {
     installEventFilter(this);
-    //connect(this, SIGNAL(pressedLabel(GameImage*)), Game, SLOT(imagePressed(GameImage *image)));
 
     //calculate the size of the screen
     QDesktopWidget desktop;
@@ -33,7 +32,7 @@ bool GameImage::eventFilter(QObject *obj, QMouseEvent *event)
 
 void GameImage::turnCard()
 {
-    if(!m_faceDown){ //if we se the face
+    if(!m_faceDown){ //if we see the face
         QPixmap image(":/Images/back.jpg");
         image = image.scaled(m_width, m_height);
         setPixmap(image);
